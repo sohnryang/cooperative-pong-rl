@@ -91,18 +91,19 @@ class Pong:
 
     COLOR = (255, 255, 255)
 
-    def __init__(self):
+    def __init__(self, bonus):
         """
         Initialize self.
         """
         pygame.init()
+        pygame.font.init()
         self.screen = pygame.display.set_mode((1600, 800))
         self.clock = pygame.time.Clock()
 
         self.paddles = []
         self.balls = []
         self.paddles.append(Paddle(
-            self.BALL_VELOCITY,
+            self.BALL_VELOCITY / 2,
             0,
             self.HEIGHT / 2 - self.PADDLE_HEIGHT / 2,
             self.PADDLE_WIDTH,
@@ -123,6 +124,8 @@ class Pong:
             self.BALL_WIDTH
         ))
         self.central_line = pygame.Rect(self.WIDTH/2, 0, 1, self.HEIGHT)
+        self.overall_score = 0
+        self.bonus = bonus
 
     def check_gameover(self):
         """
@@ -207,11 +210,12 @@ class Pong:
                 self.BALL_WIDTH:
             self.paddles[0].move_paddle(self.HEIGHT, 'down')
 
+        score = 0
         if self.check_gameover():
             self.paddles = []
             self.balls = []
             self.paddles.append(Paddle(
-                self.BALL_VELOCITY,
+                self.BALL_VELOCITY / 2,
                 0,
                 self.HEIGHT / 2 - self.PADDLE_HEIGHT / 2,
                 self.PADDLE_WIDTH,
@@ -231,13 +235,25 @@ class Pong:
                 self.BALL_WIDTH,
                 self.BALL_WIDTH
             ))
+            score -= 10
+            self.overall_score = 10
 
-        self.check_ball_hits_paddle()
+        hit, paddle = self.check_ball_hits_paddle()
+        if hit:
+            score += (10 + int(paddle == 0) * self.bonus)
         self.bounce_wall()
         for ball in self.balls:
             ball.move_ball()
             pygame.draw.rect(self.screen, self.COLOR, ball)
 
+        self.overall_score += score
+        font = pygame.font.SysFont('Noto Sans', 20)
+        text = font.render('score: %d' % self.overall_score, True, self.COLOR)
+        self.screen.blit(text, (0, 0))
+
         pygame.draw.rect(self.screen, self.COLOR, self.central_line)
         pygame.display.flip()
         self.clock.tick(60)
+
+        screen_img = pygame.surfarray.array3d(pygame.display.get_surface())
+        return (score, screen_img)
