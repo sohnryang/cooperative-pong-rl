@@ -81,9 +81,9 @@ class Pong:
     The object for pong game.
     """
     HEIGHT = 800
-    WIDTH = 1600
+    WIDTH = 800
 
-    PADDLE_WIDTH = 10
+    PADDLE_WIDTH = 20
     PADDLE_HEIGHT = 100
 
     BALL_WIDTH = 10
@@ -97,7 +97,7 @@ class Pong:
         """
         pygame.init()
         pygame.font.init()
-        self.screen = pygame.display.set_mode((1600, 800))
+        self.screen = pygame.display.set_mode((800, 800))
         self.clock = pygame.time.Clock()
 
         self.paddles = []
