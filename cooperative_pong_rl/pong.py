@@ -5,7 +5,6 @@ Pong (Cooperative Two Player)
 A pong game.
 """
 from random import randint
-from sys import exit
 import pygame
 
 
@@ -20,21 +19,15 @@ class Paddle(pygame.Rect):
 
     velocity : int
         The velocity of paddle.
-    up_key : pygame.key
-        The key to trigger up movement of paddle.
-    down_key : pygame.key
-        The key to trigger down movement of paddle
     """
-    def __init__(self, velocity, up_key, down_key, *args, **kwargs):
+    def __init__(self, velocity, *args, **kwargs):
         """
         Initialize self.
         """
         self.velocity = velocity
-        self.up_key = up_key
-        self.down_key = down_key
         super().__init__(*args, **kwargs)
 
-    def move_paddle(self, board_height):
+    def move_paddle(self, board_height, direction):
         """
         Move the paddle.
 
@@ -42,14 +35,13 @@ class Paddle(pygame.Rect):
         ----------
         board_height : int
             Height of the gameplay board.
+        direction : str
+            Moves up if 'up'. If else, move down.
         """
-        keys_pressed = pygame.key.get_pressed()
-
-        if keys_pressed[self.up_key]:
+        if direction == 'up':
             if self.y - self.velocity > 0:
                 self.y -= self.velocity
-
-        if keys_pressed[self.down_key]:
+        else:
             if self.y - self.velocity < board_height - self.height:
                 self.y += self.velocity
 
@@ -111,8 +103,6 @@ class Pong:
         self.balls = []
         self.paddles.append(Paddle(
             self.BALL_VELOCITY,
-            pygame.K_w,
-            pygame.K_s,
             0,
             self.HEIGHT / 2 - self.PADDLE_HEIGHT / 2,
             self.PADDLE_WIDTH,
@@ -120,8 +110,6 @@ class Pong:
         ))
         self.paddles.append(Paddle(
             self.BALL_VELOCITY,
-            pygame.K_k,
-            pygame.K_j,
             100,
             self.HEIGHT / 2 - self.PADDLE_HEIGHT / 2,
             self.PADDLE_WIDTH,
@@ -136,14 +124,20 @@ class Pong:
         ))
         self.central_line = pygame.Rect(self.WIDTH/2, 0, 1, self.HEIGHT)
 
-    def check_ball_hits_wall(self):
+    def check_gameover(self):
         """
-        Check if ball hits wall.
+        Check if game is over.
         """
         for ball in self.balls:
             if ball.x < 0:
-                print('game over')
-                exit(0)
+                return True
+        return False
+
+    def bounce_wall(self):
+        """
+        Bounce the ball off the wall.
+        """
+        for ball in self.balls:
             if ball.y > self.HEIGHT - self.BALL_WIDTH or ball.y < 0:
                 ball.angle = -ball.angle
             if ball.x > self.WIDTH:
@@ -151,12 +145,23 @@ class Pong:
                 ball.angle = randint(-10, 10)
 
     def check_ball_hits_paddle(self):
+        """
+        Check if ball is hitting the paddle.
+        """
         for ball in self.balls:
-            for paddle in self.paddles:
+            for index, paddle in enumerate(self.paddles):
                 if ball.colliderect(paddle):
                     ball.velocity = -ball.velocity
                     ball.angle = randint(-10, 10)
-                    break
+                    return (True, index)
+        return (False, None)
+
+    def evaluate_game(self):
+        """
+        Evaluate game status.
+        """
+        score = 0
+        return score
 
     def game_loop(self):
         """
@@ -167,20 +172,66 @@ class Pong:
                 if event.type == pygame.KEYDOWN and \
                         event.key == pygame.K_ESCAPE:
                     return
+            self.step(0)
 
-            self.check_ball_hits_paddle()
-            self.check_ball_hits_wall()
-            self.screen.fill((0, 0, 0))
+    def step(self, action):
+        """
+        Take a step.
 
-            for paddle in self.paddles:
-                paddle.move_paddle(self.HEIGHT)
-                pygame.draw.rect(self.screen, self.COLOR, paddle)
+        Parameters
+        ----------
+        action : int
+            Action to take.
 
-            for ball in self.balls:
-                ball.move_ball()
-                pygame.draw.rect(self.screen, self.COLOR, ball)
-
-            pygame.draw.rect(self.screen, self.COLOR, self.central_line)
-
-            pygame.display.flip()
-            self.clock.tick(60)
+            ===== ===========
+            Value Action
+            ----- -----------
+            0     Do nothing.
+            1     Go up.
+            2     Go down.
+            ===== ===========
+        """
+        self.screen.fill((0, 0, 0))
+        if action == 1:
+            self.paddles[1].move_paddle(self.HEIGHT, 'up')
+        elif action == 2:
+            self.paddles[1].move_paddle(self.HEIGHT, 'down')
+        for paddle in self.paddles:
+            pygame.draw.rect(self.screen, self.COLOR, paddle)
+        ball_pos = self.balls[0].y
+        if ball_pos < self.paddles[0].y:
+            self.paddles[0].move_paddle(self.HEIGHT, 'up')
+        elif ball_pos > self.paddles[0].y + self.PADDLE_HEIGHT:
+            self.paddles[0].move_paddle(self.HEIGHT, 'down')
+        if self.check_gameover():
+            self.paddles = []
+            self.balls = []
+            self.paddles.append(Paddle(
+                self.BALL_VELOCITY,
+                0,
+                self.HEIGHT / 2 - self.PADDLE_HEIGHT / 2,
+                self.PADDLE_WIDTH,
+                self.PADDLE_HEIGHT
+            ))
+            self.paddles.append(Paddle(
+                self.BALL_VELOCITY,
+                100,
+                self.HEIGHT / 2 - self.PADDLE_HEIGHT / 2,
+                self.PADDLE_WIDTH,
+                self.PADDLE_HEIGHT
+            ))
+            self.balls.append(Ball(
+                self.BALL_VELOCITY,
+                self.WIDTH / 2 - self.BALL_WIDTH / 2,
+                self.HEIGHT / 2 - self.BALL_WIDTH / 2,
+                self.BALL_WIDTH,
+                self.BALL_WIDTH
+            ))
+        self.check_ball_hits_paddle()
+        self.bounce_wall()
+        for ball in self.balls:
+            ball.move_ball()
+            pygame.draw.rect(self.screen, self.COLOR, ball)
+        pygame.draw.rect(self.screen, self.COLOR, self.central_line)
+        pygame.display.flip()
+        self.clock.tick(60)
