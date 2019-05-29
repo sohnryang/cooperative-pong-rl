@@ -192,17 +192,21 @@ class Pong:
             ===== ===========
         """
         self.screen.fill((0, 0, 0))
+
         if action == 1:
             self.paddles[1].move_paddle(self.HEIGHT, 'up')
         elif action == 2:
             self.paddles[1].move_paddle(self.HEIGHT, 'down')
         for paddle in self.paddles:
             pygame.draw.rect(self.screen, self.COLOR, paddle)
+
         ball_pos = self.balls[0].y
         if ball_pos < self.paddles[0].y:
             self.paddles[0].move_paddle(self.HEIGHT, 'up')
-        elif ball_pos > self.paddles[0].y + self.PADDLE_HEIGHT:
+        elif ball_pos > self.paddles[0].y + self.PADDLE_HEIGHT - \
+                self.BALL_WIDTH:
             self.paddles[0].move_paddle(self.HEIGHT, 'down')
+
         if self.check_gameover():
             self.paddles = []
             self.balls = []
@@ -227,11 +231,13 @@ class Pong:
                 self.BALL_WIDTH,
                 self.BALL_WIDTH
             ))
+
         self.check_ball_hits_paddle()
         self.bounce_wall()
         for ball in self.balls:
             ball.move_ball()
             pygame.draw.rect(self.screen, self.COLOR, ball)
+
         pygame.draw.rect(self.screen, self.COLOR, self.central_line)
         pygame.display.flip()
         self.clock.tick(60)
