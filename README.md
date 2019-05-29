@@ -1,2 +1,2 @@
 # cooperative-pong-rl
-Cooperative pong RL.
+Cooperative Pong RL.
