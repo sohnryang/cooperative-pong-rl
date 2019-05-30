@@ -222,7 +222,7 @@ class Pong:
 
         hit, paddle = self.check_ball_hits_paddle()
         if hit:
-            score += (10 + int(paddle == 0) * self.bonus)
+            score += self.bonus if paddle == 0 else 10
         self.bounce_wall()
         for ball in self.balls:
             ball.move_ball()
