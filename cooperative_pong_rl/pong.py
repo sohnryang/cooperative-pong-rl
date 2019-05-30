@@ -230,7 +230,7 @@ class Pong:
 
         self.overall_score += score
         font = pygame.font.SysFont('Noto Sans', 20)
-        text = font.render('score: %d' % self.overall_score, True, self.COLOR)
+        text = font.render('Score: %d' % self.overall_score, True, self.COLOR)
         self.screen.blit(text, (0, 0))
 
         pygame.draw.rect(self.screen, self.COLOR, self.central_line)
