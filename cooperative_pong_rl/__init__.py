@@ -3,13 +3,12 @@ from collections import deque
 from cooperative_pong_rl.pong import Pong
 from cooperative_pong_rl.agent import Agent
 from cooperative_pong_rl.hyperparams import (TRAIN_TIME, IMG_H, IMG_W,
-                                             IMG_HIST, SCORE_LEN)
-from skimage.transform import rotate, resize
+                                             SCORE_LEN)
+from skimage.transform import resize
 from skimage.color import rgb2gray
 from skimage.exposure import rescale_intensity
 import numpy as np
 import pickle
-import random
 
 
 def process_game_image(raw_image):
@@ -41,12 +40,13 @@ def main():
     init_screen_processed = process_game_image(init_screen)
     game_state = np.stack((init_screen_processed,) * 4, axis=2)
     game_state = game_state.reshape(1, game_state.shape[0], game_state.shape[1],
-                                    game_state[2])
+                                    game_state.shape[2])
 
     while train_time < TRAIN_TIME:
         best_action = 0
         best_action = dqn_agent.find_best(game_state, use_epsilon=True)
         returned_score, new_screen = game.step(best_action)
+        new_screen = process_game_image(new_screen)
         new_screen = new_screen.reshape(1, new_screen.shape[0],
                                         new_screen.shape[1], 1)
         next_state = np.append(new_screen, game_state[:, :, :, :3], axis=3)
