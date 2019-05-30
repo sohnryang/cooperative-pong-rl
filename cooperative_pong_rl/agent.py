@@ -5,6 +5,10 @@ Cooperative Pong Agent
 Play the cooperative pong game with DQN.
 """
 from collections import deque
+from cooperative_pong_rl.hyperparams import (
+    ACTION_COUNT, OBSERVE_PERIOD, IMG_H, IMG_W, IMG_HIST, REPMEM_SIZE,
+    BATCH_SIZE, GAMMA
+)
 from json import dump
 from keras.models import Sequential
 from keras.layers import Conv2D, Activation, Flatten, Dense
@@ -12,15 +16,6 @@ from keras import backend as K
 import numpy as np
 import random
 import tensorflow as tf
-
-ACTION_COUNT = 3
-OBSERVE_PERIOD = 2500
-IMG_H = 40
-IMG_W = 40
-IMG_HIST = 4
-REPMEM_SIZE = 2000
-BATCH_SIZE = 64
-GAMMA = 0.975
 
 
 class Agent:
