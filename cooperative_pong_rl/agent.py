@@ -112,7 +112,7 @@ class Agent:
         Train the model.
         """
         if self.steps > OBSERVE_PERIOD:
-            minibatch = random.sample(self.replay_memory, REPMEM_SIZE)
+            minibatch = random.sample(self.replay_memory, BATCH_SIZE)
             inputs = np.zeros((BATCH_SIZE, IMG_H, IMG_W, IMG_HIST))
             targets = np.zeros((inputs.shape[0], ACTION_COUNT))
             q_sa = 0
@@ -133,22 +133,22 @@ class Agent:
                     targets[i, action_t] = reward_t + GAMMA * np.max(q_sa)
 
             self.model.fit(inputs, targets, batch_size=BATCH_SIZE, epochs=1,
-                           verbose=2)
+                           verbose=0)
 
-        def save_model(self, best_weight=False):
-            """
-            Save the weight.
+    def save_model(self, best_weight=False):
+        """
+        Save the weight.
 
-            Parameters
-            ----------
-            best_weight : bool
-                If True, change the file name to indicate the quality.
-            """
-            print('saving model...')
-            self.model.save_weights(
-                'weights_best.h5' if best_weight else 'weights.h5',
-                overwrite=True
-            )
-            with open('model_best.json' if best_weight else 'model.json',
-                      'w') as f:
-                dump(self.model.to_json(), f)
+        Parameters
+        ----------
+        best_weight : bool
+            If True, change the file name to indicate the quality.
+        """
+        print('saving model...')
+        self.model.save_weights(
+            'weights_best.h5' if best_weight else 'weights.h5',
+            overwrite=True
+        )
+        with open('model_best.json' if best_weight else 'model.json',
+                  'w') as f:
+            dump(self.model.to_json(), f)
