@@ -99,7 +99,14 @@ class Pong:
         pygame.font.init()
         self.screen = pygame.display.set_mode((800, 800))
         self.clock = pygame.time.Clock()
+        self.overall_score = 0
+        self.bonus = bonus
+        self.reset_game()
 
+    def reset_game(self):
+        """
+        Reset the game.
+        """
         self.paddles = []
         self.balls = []
         self.paddles.append(Paddle(
@@ -124,8 +131,6 @@ class Pong:
             self.BALL_WIDTH
         ))
         self.central_line = pygame.Rect(self.WIDTH/2, 0, 1, self.HEIGHT)
-        self.overall_score = 0
-        self.bonus = bonus
 
     def check_gameover(self):
         """
@@ -212,29 +217,7 @@ class Pong:
 
         score = 0
         if self.check_gameover():
-            self.paddles = []
-            self.balls = []
-            self.paddles.append(Paddle(
-                self.BALL_VELOCITY / 2,
-                0,
-                self.HEIGHT / 2 - self.PADDLE_HEIGHT / 2,
-                self.PADDLE_WIDTH,
-                self.PADDLE_HEIGHT
-            ))
-            self.paddles.append(Paddle(
-                self.BALL_VELOCITY,
-                100,
-                self.HEIGHT / 2 - self.PADDLE_HEIGHT / 2,
-                self.PADDLE_WIDTH,
-                self.PADDLE_HEIGHT
-            ))
-            self.balls.append(Ball(
-                self.BALL_VELOCITY,
-                self.WIDTH / 2 - self.BALL_WIDTH / 2,
-                self.HEIGHT / 2 - self.BALL_WIDTH / 2,
-                self.BALL_WIDTH,
-                self.BALL_WIDTH
-            ))
+            self.reset_game()
             score -= 10
             self.overall_score = 10
 
