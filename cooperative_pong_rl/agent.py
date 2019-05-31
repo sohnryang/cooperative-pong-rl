@@ -54,11 +54,16 @@ class Agent:
         self.steps = 0
         self.epsilon = 1.0
 
-    def load_trained(self):
+    def load_trained(self, weights_file):
         """
         Load trained model.
+
+        Parameters
+        ----------
+        weights_file : str
+            Path to file containing weights.
         """
-        self.model.load_weights('best_pong_weight.h5')
+        self.model.load_weights(weights_file)
         self.model.compile(loss='mse', optimizer='adam')
         self.epsilon - 0.0
 
