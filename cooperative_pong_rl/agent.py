@@ -100,14 +100,15 @@ class Agent:
         self.steps += 1
         self.epsilon = 1.0
         if self.steps > OBSERVE_PERIOD:
-            self.epsilon = 0.75
-            if self.steps > 7500:
+            if self.steps <= 7500:
+                self.epsilon = 0.75
+            if 7500 < self.steps <= 15000:
                 self.epsilon = 0.5
-            elif self.steps > 15000:
+            elif 15000 < self.steps <= 30000:
                 self.epsilon = 0.25
-            elif self.steps > 30000:
+            elif 30000 < self.steps <= 45000:
                 self.epsilon = 0.15
-            elif self.steps > 45000:
+            elif 45000 < self.steps <= 75000:
                 self.epsilon = 0.1
             elif self.steps > 75000:
                 self.epsilon = 0.05
