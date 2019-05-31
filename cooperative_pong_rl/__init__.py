@@ -58,12 +58,16 @@ def main():
             dqn_agent.train_network()
             game_state = next_state
             train_time += 1
+            print('train time: %d, epsilon: %f, game_score: %d' % (
+                train_time,
+                dqn_agent.epsilon,
+                game.overall_score
+            ))
 
             if train_time % 5000 == 0:
                 dqn_agent.save_model()
 
             if train_time % 250 == 0:
-                print('train time: %d' % train_time)
                 train_hist.append((train_time, game.overall_score,
                                    dqn_agent.epsilon))
 
