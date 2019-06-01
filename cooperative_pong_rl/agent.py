@@ -99,19 +99,22 @@ class Agent:
             self.replay_memory.popleft()
         self.steps += 1
         self.epsilon = 1.0
+        phase_size = TRAIN_TIME // 7
         if self.steps > OBSERVE_PERIOD:
-            if self.steps <= 7500:
+            if self.steps <= phase_size:
                 self.epsilon = 0.75
-            if 7500 < self.steps <= 15000:
+            if phase_size < self.steps <= phase_size * 2:
                 self.epsilon = 0.5
-            elif 15000 < self.steps <= 30000:
+            elif phase_size * 2 < self.steps <= phase_size * 3:
                 self.epsilon = 0.25
-            elif 30000 < self.steps <= 45000:
+            elif phase_size * 3 < self.steps <= phase_size * 4:
                 self.epsilon = 0.15
-            elif 45000 < self.steps <= 75000:
+            elif phase_size * 4 < self.steps <= phase_size * 5:
                 self.epsilon = 0.1
-            elif self.steps > 75000:
+            elif phase_size * 5 < self.steps <= phase_size * 6:
                 self.epsilon = 0.05
+            else:
+                self.epsilon = 0
 
     def train_network(self):
         """
