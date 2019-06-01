@@ -63,8 +63,9 @@ class Ball(pygame.Rect):
         Initialize self.
         """
         self.velocity = velocity
-        self.angle = 0
+        self.angle = velocity
         super().__init__(*args, **kwargs)
+        self.y = 50
 
     def move_ball(self):
         """
@@ -150,7 +151,6 @@ class Pong:
                 ball.angle = -ball.angle
             if ball.x > self.WIDTH:
                 ball.velocity = -ball.velocity
-                ball.angle = randint(-10, 10)
 
     def check_ball_hits_paddle(self):
         """
@@ -160,7 +160,6 @@ class Pong:
             for index, paddle in enumerate(self.paddles):
                 if ball.colliderect(paddle):
                     ball.velocity = -ball.velocity
-                    ball.angle = randint(-10, 10)
                     return (True, index)
         return (False, None)
 
