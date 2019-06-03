@@ -31,23 +31,24 @@ class Agent:
         sess = tf.Session()
         K.set_session(sess)
 
-        self.model = Sequential()
-        self.model.add(Conv2D(32, kernel_size=4, strides=(2, 2),
-                       input_shape=(IMG_H, IMG_W, IMG_HIST),
-                       padding='same'))
-        self.model.add(Activation('relu'))
-        self.model.add(Conv2D(64, kernel_size=4, strides=(2, 2),
-                       padding='same'))
-        self.model.add(Activation('relu'))
-        self.model.add(Conv2D(64, kernel_size=3, strides=(1, 1),
-                       padding='same'))
-        self.model.add(Activation('relu'))
-        self.model.add(Flatten())
-        self.model.add(Dense(512, kernel_initializer='he_normal'))
-        self.model.add(Activation('relu'))
-        self.model.add(Dense(units=ACTION_COUNT, activation='linear',
-                             kernel_initializer='he_normal'))
-        self.model.compile(loss='mse', optimizer='adam')
+        with K.tf.device('/gpu:0'):
+            self.model = Sequential()
+            self.model.add(Conv2D(32, kernel_size=4, strides=(2, 2),
+                        input_shape=(IMG_H, IMG_W, IMG_HIST),
+                        padding='same'))
+            self.model.add(Activation('relu'))
+            self.model.add(Conv2D(64, kernel_size=4, strides=(2, 2),
+                        padding='same'))
+            self.model.add(Activation('relu'))
+            self.model.add(Conv2D(64, kernel_size=3, strides=(1, 1),
+                        padding='same'))
+            self.model.add(Activation('relu'))
+            self.model.add(Flatten())
+            self.model.add(Dense(512, kernel_initializer='he_normal'))
+            self.model.add(Activation('relu'))
+            self.model.add(Dense(units=ACTION_COUNT, activation='linear',
+                                kernel_initializer='he_normal'))
+            self.model.compile(loss='mse', optimizer='adam')
 
         self.replay_memory = deque()
         self.steps = 0
