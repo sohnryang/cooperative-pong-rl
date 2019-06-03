@@ -43,9 +43,10 @@ class Agent:
                        padding='same'))
         self.model.add(Activation('relu'))
         self.model.add(Flatten())
-        self.model.add(Dense(512))
+        self.model.add(Dense(512, kernel_initializer='he_normal'))
         self.model.add(Activation('relu'))
-        self.model.add(Dense(units=ACTION_COUNT, activation='linear'))
+        self.model.add(Dense(units=ACTION_COUNT, activation='linear',
+                             kernel_initializer='he_normal'))
         self.model.compile(loss='mse', optimizer='adam')
 
         self.replay_memory = deque()
@@ -101,7 +102,7 @@ class Agent:
         if self.steps > OBSERVE_PERIOD:
             if self.steps <= phase_size:
                 self.epsilon = 0.75
-            if phase_size < self.steps <= phase_size * 2:
+            elif phase_size < self.steps <= phase_size * 2:
                 self.epsilon = 0.5
             elif phase_size * 2 < self.steps <= phase_size * 3:
                 self.epsilon = 0.25
