@@ -3,7 +3,7 @@ from collections import deque
 from cooperative_pong_rl.pong import Pong
 from cooperative_pong_rl.agent import Agent
 from cooperative_pong_rl.hyperparams import (TRAIN_TIME, IMG_H, IMG_W,
-                                             SCORE_LEN)
+                                             SCORE_LEN, HUMAN_BONUS)
 from skimage.transform import resize
 from skimage.color import rgb2gray
 from skimage.exposure import rescale_intensity
@@ -35,7 +35,7 @@ def main():
         train_time = 0
         train_hist = []
         scores = deque()
-        game = Pong(0)
+        game = Pong(HUMAN_BONUS)
         dqn_agent = Agent()
         next_action = 0
         init_score, init_screen = game.step(next_action)
