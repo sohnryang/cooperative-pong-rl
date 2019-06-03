@@ -139,9 +139,10 @@ class Agent:
                     targets[i, action_t] = reward_t
                 else:
                     targets[i, action_t] = reward_t + GAMMA * np.max(q_sa)
-
-            self.model.fit(inputs, targets, batch_size=BATCH_SIZE, epochs=1,
-                           verbose=0)
+            
+            with K.tf.device('/gpu:0'):
+                self.model.fit(inputs, targets, batch_size=BATCH_SIZE,
+                               epochs=1, verbose=0)
 
     def save_model(self, best_weight=False):
         """
