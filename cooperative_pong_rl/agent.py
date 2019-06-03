@@ -7,7 +7,7 @@ Play the cooperative pong game with DQN.
 from collections import deque
 from cooperative_pong_rl.hyperparams import (
     ACTION_COUNT, OBSERVE_PERIOD, IMG_H, IMG_W, IMG_HIST, REPMEM_SIZE,
-    BATCH_SIZE, GAMMA
+    BATCH_SIZE, GAMMA, TRAIN_TIME
 )
 from json import dump
 from keras.models import Sequential
@@ -28,9 +28,7 @@ class Agent:
         """
         Initialize self.
         """
-        config = tf.ConfigProto()
-        config.gpu_options.allow_growth = True
-        sess = tf.Session(config=config)
+        sess = tf.Session()
         K.set_session(sess)
 
         self.model = Sequential()
