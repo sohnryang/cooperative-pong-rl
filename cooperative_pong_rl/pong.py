@@ -217,7 +217,7 @@ class Pong:
         score = 0
         if self.check_gameover():
             self.reset_game()
-            score -= 10
+            score -= 50
 
         hit, paddle = self.check_ball_hits_paddle()
         if hit:
