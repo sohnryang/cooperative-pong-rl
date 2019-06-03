@@ -4,7 +4,7 @@ Pong (Cooperative Two Player)
 
 A pong game.
 """
-from random import randint
+from random import randrange
 import pygame
 
 
@@ -127,7 +127,7 @@ class Pong:
         self.balls.append(Ball(
             self.BALL_VELOCITY,
             self.WIDTH / 2 - self.BALL_WIDTH / 2,
-            self.HEIGHT / 2 - self.BALL_WIDTH / 2,
+            randrange(0, self.HEIGHT),
             self.BALL_WIDTH,
             self.BALL_WIDTH
         ))
