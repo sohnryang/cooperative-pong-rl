@@ -58,10 +58,11 @@ def main():
             dqn_agent.train_network()
             game_state = next_state
             train_time += 1
-            print('train time: %d, epsilon: %f, game_score: %d' % (
+            print('train time: %d, epsilon: %f, game_score: %d, hits: %s' % (
                 train_time,
                 dqn_agent.epsilon,
-                game.overall_score
+                game.overall_score,
+                str(game.paddle_hits),
             ))
 
             if train_time % 5000 == 0:

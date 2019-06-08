@@ -101,6 +101,7 @@ class Pong:
         self.screen = pygame.display.set_mode((800, 800))
         self.clock = pygame.time.Clock()
         self.overall_score = 0
+        self.paddle_hits = [0, 0]
         self.bonus = bonus
         self.reset_game()
 
@@ -127,7 +128,7 @@ class Pong:
         self.balls.append(Ball(
             self.BALL_VELOCITY,
             self.WIDTH / 2 - self.BALL_WIDTH / 2,
-            randrange(0, self.HEIGHT),
+            400,
             self.BALL_WIDTH,
             self.BALL_WIDTH
         ))
@@ -221,7 +222,11 @@ class Pong:
 
         hit, paddle = self.check_ball_hits_paddle()
         if hit:
-            score += self.bonus if paddle == 0 else 10
+            if paddle == 0:
+                score += self.bonus
+            else:
+                score += 10
+            self.paddle_hits[paddle] += 1
         self.bounce_wall()
         for ball in self.balls:
             ball.move_ball()
@@ -229,7 +234,11 @@ class Pong:
 
         self.overall_score += score
         font = pygame.font.SysFont('Noto Sans', 20)
-        text = font.render('Score: %d' % self.overall_score, True, self.COLOR)
+        text = font.render('Score: %d, Paddle 0 hit: %d, Paddle 1 hit: %d' % (
+            self.overall_score,
+            self.paddle_hits[0],
+            self.paddle_hits[1],
+        ), True, self.COLOR)
         self.screen.blit(text, (0, 0))
 
         pygame.draw.rect(self.screen, self.COLOR, self.central_line)
